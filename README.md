@@ -1,6 +1,6 @@
 # goci - A Simple Go Continuous Integration Tool
 
-A lightweight, educational implementation of a Continuous Integration (CI) tool for Go programs. This project demonstrates how to control and orchestrate multiple processes using Go.
+A lightweight, command line implementation of a Continuous Integration (CI) tool for Go programs. This project demonstrates how to control and orchestrate multiple processes using Go.
 
 **⚠️ Note:** This is a learning project and is **not production-ready**.
 
