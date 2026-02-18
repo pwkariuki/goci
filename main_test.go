@@ -14,7 +14,7 @@ func TestRun(t *testing.T) {
 		expErr error
 	}{
 		{name: "success", proj: "./testdata/tool/",
-			out:    "Go Build: SUCCESS\nGo Test: SUCCESS\nGofmt: SUCCESS\n",
+			out:    "Go Build: SUCCESS\nGo Test: SUCCESS\nGofmt: SUCCESS\nGit Push: SUCCESS\n",
 			expErr: nil},
 		{name: "fail", proj: "./testdata/toolErr",
 			out:    "",
