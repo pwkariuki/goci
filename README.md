@@ -29,11 +29,4 @@ If any step fails, the pipeline stops and reports the error.
 
 The tool executes each pipeline step using Go's `os/exec` package, capturing output and handling errors appropriately. Each step must succeed before moving to the next one.
 
-## Learning Value
-
-This project is a great starting point for understanding:
-
-- How CI/CD pipelines work
-- Process management in Go
-- Building command-line automation tools
-- Error handling and process orchestration
+Feel free to extend!
