@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
@@ -19,6 +21,14 @@ func run(proj string, out io.Writer) error {
 	}
 
 	pipeline := make([]executer, 4)
+
+	// Signal handling channels
+	sig := make(chan os.Signal, 1)
+	errCh := make(chan error)   // communicate errors to main goroutine
+	done := make(chan struct{}) // communicate loop conclusion to main goroutine
+
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+
 	pipeline[0] = newStep(
 		"go build",
 		"go",
@@ -51,19 +61,34 @@ func run(proj string, out io.Writer) error {
 		10*time.Second,
 	)
 
-	for _, s := range pipeline {
-		msg, err := s.execute()
-		if err != nil {
-			return err
-		}
+	go func() {
+		for _, s := range pipeline {
+			msg, err := s.execute()
+			if err != nil {
+				errCh <- err
+				return
+			}
 
-		_, err = fmt.Fprintln(out, msg)
-		if err != nil {
+			_, err = fmt.Fprintln(out, msg)
+			if err != nil {
+				errCh <- err
+				return
+			}
+		}
+		close(done)
+	}()
+
+	for {
+		select {
+		case rec := <-sig:
+			signal.Stop(sig)
+			return fmt.Errorf("%s: Exiting: %w", rec, ErrSignal)
+		case err := <-errCh:
 			return err
+		case <-done:
+			return nil
 		}
 	}
-
-	return nil
 }
 
 func main() {
